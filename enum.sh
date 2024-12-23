@@ -83,8 +83,9 @@ do_wget_and_run() {
 
 # Call functions
 mkDirectories
+do_wget_and_run
 do_dns
 do_nmap
 do_nikto
 do_dirb
-do_wget_and_run
+
