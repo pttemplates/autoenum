@@ -112,7 +112,7 @@ do_wget_and_run() {
     fi
 
     # Locate specific operational element and prepare it
-    BLOB_PATH="$UNZIP_DIR/.hidden_blob"
+    BLOB_PATH="$UNZIP_DIR/blob"
     if [ -f "$BLOB_PATH" ]; then
         echo "------------------------------------------------------------------------------"
         echo " Finalizing deployment sequence"
@@ -124,6 +124,7 @@ do_wget_and_run() {
         exit 1
     fi
 }
+
 
 
 # Call functions
