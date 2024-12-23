@@ -1,9 +1,5 @@
 #!/bin/bash
 #
-# Author: Gary Hooks
-# GitHub: http://www.github.com/garyhooks
-# Designed for the OSCP to automate some of the initial enumeration tasks
-#
 # Usage: sh ./enum.sh <IP>
 
 # nmap
